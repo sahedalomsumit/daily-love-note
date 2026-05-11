@@ -13,6 +13,16 @@ require('./scheduler');
 const app = express();
 const port = process.env.PORT || 3001;
 
+// Memory monitoring for Render (512MB limit)
+setInterval(() => {
+  const used = process.memoryUsage();
+  console.log('--- Memory Usage ---');
+  for (let key in used) {
+    console.log(`${key}: ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
+  }
+  console.log('--------------------');
+}, 5 * 60 * 1000); // Every 5 minutes
+
 // Configure CORS
 const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
   .split(',')

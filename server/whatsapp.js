@@ -40,6 +40,7 @@ const client = new Client({
     },
     authTimeoutMs: 120000, // Increase to 120s
     puppeteer: {
+        headless: 'new',
         handleSIGTERM: false,
         handleSIGINT: false,
         args: [
@@ -48,7 +49,25 @@ const client = new Client({
             '--disable-dev-shm-usage',
             '--disable-gpu',
             '--no-zygote',
-            '--disable-extensions'
+            '--disable-extensions',
+            '--disable-accelerated-2d-canvas',
+            '--disable-canvas-aa',
+            '--disable-2d-canvas-clip-aa',
+            '--disable-gl-drawing-for-tests',
+            '--mute-audio',
+            '--no-first-run',
+            '--no-default-browser-check',
+            '--disable-breakpad',
+            '--disable-canvas-aa',
+            '--disable-composited-antialiasing',
+            '--disable-infobars',
+            '--disable-notifications',
+            '--disable-offer-store-unmasked-wallet-cards',
+            '--disable-print-preview',
+            '--disable-speech-api',
+            '--disable-web-security',
+            '--ignore-certificate-errors',
+            '--ignore-certificate-errors-spki-list'
         ],
         executablePath: getExecutablePath()
     }
@@ -83,7 +102,11 @@ client.on('auth_failure', msg => {
 client.on('disconnected', (reason) => {
     clientStatus = 'DISCONNECTED';
     console.log('Client was logged out', reason);
-    client.initialize();
+    // Add delay before reconnecting to prevent memory/CPU spikes
+    setTimeout(() => {
+        console.log('Attempting to re-initialize WhatsApp client...');
+        client.initialize().catch(err => console.error('Re-initialization failed:', err.message));
+    }, 5000);
 });
 
 console.log('Initializing WhatsApp client...');
