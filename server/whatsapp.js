@@ -34,6 +34,11 @@ const client = new Client({
     authStrategy: new LocalAuth({
         dataPath: './.wwebjs_auth'
     }),
+    webVersionCache: {
+        type: 'remote',
+        remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.3000.1012170943-alpha.html',
+    },
+    authTimeoutMs: 60000, // 60 seconds
     puppeteer: {
         handleSIGTERM: false,
         handleSIGINT: false,
@@ -45,7 +50,21 @@ const client = new Client({
             '--no-first-run',
             '--no-zygote',
             '--single-process',
-            '--disable-gpu'
+            '--disable-gpu',
+            '--hide-scrollbars',
+            '--disable-notifications',
+            '--disable-background-timer-throttling',
+            '--disable-backgrounding-occluded-windows',
+            '--disable-breakpad',
+            '--disable-component-extensions-with-background-pages',
+            '--disable-extensions',
+            '--disable-features=TranslateUI,BlinkGenPropertyTrees',
+            '--disable-ipc-flooding-protection',
+            '--disable-renderer-backgrounding',
+            '--enable-features=NetworkService,NetworkServiceInProcess',
+            '--force-color-profile=srgb',
+            '--metrics-recording-only',
+            '--mute-audio'
         ],
         executablePath: getExecutablePath()
     }
