@@ -14,8 +14,32 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 // Middleware
+// Configure CORS
+const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
+  .split(',')
+  .map(url => {
+    try {
+      const parsed = new URL(url.trim());
+      return `${parsed.protocol}//${parsed.host}`;
+    } catch (e) {
+      return url.trim();
+    }
+  })
+  .filter(Boolean);
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+      callback(null, true);
+    } else {
+      console.warn(`CORS blocked request from origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
 }));
 app.use(express.json());
 
