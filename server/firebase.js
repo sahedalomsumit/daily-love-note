@@ -1,15 +1,23 @@
 const admin = require('firebase-admin');
 
 try {
-  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  let serviceAccountStr = process.env.FIREBASE_SERVICE_ACCOUNT;
+  
+  // Handle case where the string might be wrapped in single quotes from .env or environment settings
+  if (serviceAccountStr && serviceAccountStr.startsWith("'") && serviceAccountStr.endsWith("'")) {
+    serviceAccountStr = serviceAccountStr.slice(1, -1);
+  }
+
+  const serviceAccount = JSON.parse(serviceAccountStr);
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
   });
   console.log('Firebase initialized successfully');
 } catch (error) {
   console.error('Firebase initialization error: Make sure FIREBASE_SERVICE_ACCOUNT in .env is a valid minified JSON.');
+  console.error('Current value start:', process.env.FIREBASE_SERVICE_ACCOUNT ? process.env.FIREBASE_SERVICE_ACCOUNT.substring(0, 20) : 'undefined');
   console.error(error.message);
-  process.exit(1); // Exit if critical service fails
+  process.exit(1);
 }
 
 const db = admin.firestore();
