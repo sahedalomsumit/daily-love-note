@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+
+# WhatsApp Sessions
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Firebase
+firebase-service-account.json
+.firebase/
+firestore-debug.log
+ui-debug.log
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
