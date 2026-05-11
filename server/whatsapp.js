@@ -46,7 +46,10 @@ client.on('disconnected', (reason) => {
 
 console.log('Initializing WhatsApp client...');
 client.initialize().catch(err => {
-    console.error('Failed to initialize WhatsApp client:', err.message);
+    console.error('CRITICAL: Failed to initialize WhatsApp client!');
+    console.error('Error Name:', err.name);
+    console.error('Error Message:', err.message);
+    console.error('Full Stack:', err.stack);
     clientStatus = 'ERROR';
 });
 
