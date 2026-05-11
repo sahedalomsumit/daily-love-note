@@ -19,8 +19,9 @@ const Settings = () => {
 
   const maskPhone = (phone) => {
     if (!phone) return '...';
-    return phone.replace(/(\d{5})\d+(\d{2})/, '$1XXXXX$2');
+    return `*******${phone.slice(-3)}`;
   };
+
 
   return (
     <div className="max-w-3xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -81,7 +82,7 @@ const Settings = () => {
         </div>
 
         {/* External Cron Setup */}
-        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 text-white shadow-xl">
+        <div className="bg-linear-to-br from-gray-800 to-gray-900 rounded-2xl p-8 text-white shadow-xl">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-bold">cron-job.org Setup</h3>
             <a 

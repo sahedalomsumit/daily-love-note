@@ -42,6 +42,12 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const formatPhone = (phone) => {
+    if (!phone) return 'Not Configured';
+    const lastThree = phone.slice(-3);
+    return `*******${lastThree}`;
+  };
+
   if (loading) return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
@@ -63,12 +69,13 @@ const Dashboard = () => {
                 <Phone size={20} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-700">{status?.wifePhone || 'Not Configured'}</p>
+                <p className="text-sm font-semibold text-gray-700">{formatPhone(status?.wifePhone)}</p>
                 <p className="text-[10px] text-gray-400">Target Recipient</p>
               </div>
             </div>
           </div>
         </div>
+
 
         {/* Schedule Card */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">

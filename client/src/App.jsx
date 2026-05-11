@@ -36,11 +36,11 @@ function App() {
         {/* Sidebar */}
         <aside className="w-full md:w-64 bg-white border-b md:border-b-0 md:border-r border-gray-100 p-6 flex flex-col shrink-0">
           <div className="flex items-center gap-3 mb-10 px-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-pink-200">
+            <div className="w-10 h-10 bg-linear-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-pink-200">
               <Heart size={24} fill="currentColor" />
             </div>
             <div>
-              <h1 className="font-black text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-rose-600">
+              <h1 className="font-black text-lg tracking-tight bg-clip-text text-transparent bg-linear-to-r from-pink-600 to-rose-600">
                 Daily Love
               </h1>
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Automation</p>
