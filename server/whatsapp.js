@@ -4,13 +4,50 @@ const qrcode = require('qrcode-terminal');
 let qrCodeData = null;
 let clientStatus = 'DISCONNECTED';
 
+const fs = require('fs');
+const path = require('path');
+
+// Auto-finder for Puppeteer on Render
+const getExecutablePath = () => {
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) return process.env.PUPPETEER_EXECUTABLE_PATH;
+    
+    // Common Render paths for chrome installed via npx puppeteer browsers install chrome
+    const possiblePaths = [
+        // Path when Root Directory is 'server'
+        '/opt/render/project/src/server/node_modules/puppeteer/.local-chromium',
+        '/opt/render/project/puppeteer',
+        '/usr/bin/google-chrome-stable',
+        '/usr/bin/google-chrome'
+    ];
+
+    for (const p of possiblePaths) {
+        if (fs.existsSync(p)) {
+            console.log(`Found Chrome at: ${p}`);
+            return p;
+        }
+    }
+    
+    return null; // Fallback to puppeteer default
+};
+
 const client = new Client({
     authStrategy: new LocalAuth({
         dataPath: './.wwebjs_auth'
     }),
     puppeteer: {
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || null
+        handleSIGTERM: false,
+        handleSIGINT: false,
+        args: [
+            '--no-sandbox', 
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process',
+            '--disable-gpu'
+        ],
+        executablePath: getExecutablePath()
     }
 });
 
