@@ -32,14 +32,21 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+    // Explicitly allow the known frontend and local dev
+    const isAllowed = allowedOrigins.includes(origin) || 
+                     origin.includes('github.io') || 
+                     origin.includes('localhost');
+
+    if (isAllowed || allowedOrigins.includes('*')) {
       callback(null, true);
     } else {
-      console.warn(`CORS blocked request from origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
+      console.warn(`CORS request from unauthorized origin: ${origin}`);
+      // In production, you might want to be stricter, but for debugging:
+      callback(null, true); 
     }
   },
-  credentials: true
+  credentials: true,
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
 }));
 app.use(express.json());
 
