@@ -29,7 +29,7 @@ const NavLink = ({ to, icon: Icon, children }) => {
 
 function App() {
   return (
-    <Router>
+    <Router basename="/daily-love-note">
       <div className="min-h-screen bg-[#F8F9FD] flex flex-col md:flex-row font-sans text-gray-900">
         <Toaster position="top-right" />
         
