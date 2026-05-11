@@ -13,41 +13,47 @@ require('./scheduler');
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Middleware
 // Configure CORS
 const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
   .split(',')
-  .map(url => {
-    try {
-      const parsed = new URL(url.trim());
-      return `${parsed.protocol}//${parsed.host}`;
-    } catch (e) {
-      return url.trim();
-    }
-  })
+  .map(url => url.trim().replace(/\/$/, '')) // Remove trailing slashes
   .filter(Boolean);
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    // Explicitly allow the known frontend and local dev
-    const isAllowed = allowedOrigins.includes(origin) || 
-                     origin.includes('github.io') || 
-                     origin.includes('localhost');
+    // Check if the origin is in our allowed list
+    const isAllowed = allowedOrigins.some(allowed => {
+      if (allowed === '*') return true;
+      try {
+        const allowedUrl = new URL(allowed);
+        const originUrl = new URL(origin);
+        return allowedUrl.hostname === originUrl.hostname;
+      } catch (e) {
+        return allowed === origin || origin.includes(allowed);
+      }
+    });
 
-    if (isAllowed || allowedOrigins.includes('*')) {
+    if (isAllowed || origin.includes('github.io') || origin.includes('localhost')) {
       callback(null, true);
     } else {
       console.warn(`CORS request from unauthorized origin: ${origin}`);
-      // In production, you might want to be stricter, but for debugging:
-      callback(null, true); 
+      // For now, allow it but log it
+      callback(null, true);
     }
   },
   credentials: true,
-  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
-}));
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+// Handle preflight requests for all routes
+app.options('*', cors(corsOptions));
+
 app.use(express.json());
 
 app.get('/', (req, res) => {

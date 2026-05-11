@@ -1,4 +1,9 @@
 const authMiddleware = (req, res, next) => {
+  // Allow OPTIONS requests for CORS preflight
+  if (req.method === 'OPTIONS') {
+    return next();
+  }
+
   const authHeader = req.headers.authorization;
   const secret = process.env.APP_SECRET;
 
