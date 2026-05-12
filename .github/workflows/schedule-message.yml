@@ -1,0 +1,17 @@
+name: Daily Love Note Scheduler
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+jobs:
+  send-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Send Message API
+        run: |
+          curl -X POST "https://daily-love-note.web.app/api/sendMessage" \
+          -H "Content-Type: application/json" \
+          -H "x-api-key: ${{ secrets.BACKEND_API_KEY }}" \
+          -d '{"trigger": "github-actions-cron"}'
