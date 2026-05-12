@@ -84,37 +84,37 @@ const Settings = () => {
         {/* External Cron Setup */}
         <div className="bg-linear-to-br from-gray-800 to-gray-900 rounded-2xl p-8 text-white shadow-xl">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold">cron-job.org Setup</h3>
+            <h3 className="text-lg font-bold">Automation Setup</h3>
             <a 
               href="https://cron-job.org" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center gap-1 text-pink-400 hover:text-pink-300 text-sm font-medium transition-colors"
             >
-              Open Site <ExternalLink size={14} />
+              cron-job.org <ExternalLink size={14} />
             </a>
           </div>
 
           <div className="space-y-4">
             <p className="text-gray-300 text-sm leading-relaxed">
-              To ensure the app stays alive on Render free tier, set up two jobs:
+              To automate the daily message, set up these jobs:
             </p>
             
             <div className="space-y-3">
               <div className="bg-white/10 p-4 rounded-xl border border-white/10">
                 <p className="text-xs font-bold text-pink-400 uppercase mb-2">Job 1: Keep Alive</p>
-                <p className="text-sm font-mono break-all text-gray-100">GET https://your-backend.onrender.com/api/health</p>
+                <p className="text-sm font-mono break-all text-gray-100">GET YOUR_BACKEND_URL/api/health</p>
                 <p className="text-xs text-gray-400 mt-2">Schedule: Every 10 minutes</p>
               </div>
 
               <div className="bg-white/10 p-4 rounded-xl border border-white/10">
                 <p className="text-xs font-bold text-pink-400 uppercase mb-2">Job 2: Daily Trigger</p>
-                <p className="text-sm font-mono break-all text-gray-100">POST https://your-backend.onrender.com/api/trigger</p>
+                <p className="text-sm font-mono break-all text-gray-100">POST YOUR_BACKEND_URL/api/trigger</p>
                 <div className="mt-2 space-y-1">
                   <p className="text-[10px] text-gray-400 font-bold uppercase">Header Required:</p>
                   <code className="text-xs bg-black/30 px-2 py-0.5 rounded">Authorization: Bearer YOUR_APP_SECRET</code>
                 </div>
-                <p className="text-xs text-gray-400 mt-2">Schedule: Once daily at 1:00 AM UTC</p>
+                <p className="text-xs text-gray-400 mt-2">Schedule: Once daily at your preferred time</p>
               </div>
             </div>
           </div>

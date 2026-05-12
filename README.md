@@ -11,9 +11,9 @@ Full-stack automation app that sends a daily heartfelt message from **Sahed** to
 
 ## 🚀 Deployment
 
-### 1. Backend (Render)
-- Deploy the `server/` directory to **Render** as a Web Service.
-- **Dependencies**: Puppeteer requires specific build settings on Render (see `puppeteer` config in `whatsapp.js`).
+### 1. Backend
+- Deploy the `server/` directory to your preferred cloud provider (e.g., VPS, Firebase, etc.).
+- **Dependencies**: Puppeteer requires a environment where Chrome can be installed.
 - **Environment Variables**:
   - `GEMINI_API_KEY`: Your Google AI Studio key.
   - `GEMINI_MODELS`: Comma-separated list of 7+ models (e.g., `gemini-2.0-flash,gemini-flash-latest...`).
@@ -21,11 +21,10 @@ Full-stack automation app that sends a daily heartfelt message from **Sahed** to
   - `WIFE_PHONE`: Recipient's phone number with country code.
   - `APP_SECRET`: Security token for API access.
 
-### 2. Frontend (GitHub Pages)
-- Deploy the `client/` directory to **GitHub Pages**.
-- **Important**: Update `vite.config.js` with `base: '/repo-name/'` if not using a custom domain.
+### 2. Frontend
+- Deploy the `client/` directory (e.g., GitHub Pages, Vercel, Firebase Hosting).
 - **Environment Variables**:
-  - `VITE_API_URL`: Your Render backend URL.
+  - `VITE_API_URL`: Your deployed backend URL.
   - `VITE_APP_SECRET`: Must match backend `APP_SECRET`.
 
 ## 🛠️ Local Setup
@@ -42,9 +41,9 @@ Full-stack automation app that sends a daily heartfelt message from **Sahed** to
 3. `npm run dev`
 
 ## 📅 Scheduling
-Set up two jobs on **cron-job.org**:
-1. **Keep Alive**: `GET /api/health` every 10 minutes to prevent Render sleep.
-2. **Daily Trigger**: `POST /api/trigger` once daily at your preferred time with `Authorization: Bearer YOUR_APP_SECRET`.
+Set up automated jobs (e.g., via **cron-job.org** or GitHub Actions):
+1. **Keep Alive**: `GET /api/health` regularly if using a service that sleeps.
+2. **Daily Trigger**: `POST /api/trigger` once daily with `Authorization: Bearer YOUR_APP_SECRET`.
 
 ## 🔒 Security
 - **Bearer Token Auth**: All sensitive routes are protected.

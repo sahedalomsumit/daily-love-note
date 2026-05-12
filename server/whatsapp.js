@@ -7,15 +7,12 @@ let clientStatus = 'DISCONNECTED';
 const fs = require('fs');
 const path = require('path');
 
-// Auto-finder for Puppeteer on Render
+// Auto-finder for Puppeteer
 const getExecutablePath = () => {
     if (process.env.PUPPETEER_EXECUTABLE_PATH) return process.env.PUPPETEER_EXECUTABLE_PATH;
     
-    // Common Render paths for chrome installed via npx puppeteer browsers install chrome
+    // Common paths for chrome
     const possiblePaths = [
-        // Path when Root Directory is 'server'
-        '/opt/render/project/src/server/node_modules/puppeteer/.local-chromium',
-        '/opt/render/project/puppeteer',
         '/usr/bin/google-chrome-stable',
         '/usr/bin/google-chrome'
     ];
