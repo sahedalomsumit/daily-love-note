@@ -86,14 +86,26 @@ client.on('disconnected', (reason) => {
     client.initialize();
 });
 
-console.log('Initializing WhatsApp client...');
-client.initialize().catch(err => {
-    console.error('CRITICAL: Failed to initialize WhatsApp client!');
-    console.error('Error Name:', err.name);
-    console.error('Error Message:', err.message);
-    console.error('Full Stack:', err.stack);
-    clientStatus = 'ERROR';
-});
+const initializeClient = async () => {
+    if (clientStatus === 'READY' || clientStatus === 'AUTHENTICATED') return client;
+    
+    console.log('Initializing WhatsApp client...');
+    try {
+        await client.initialize();
+        return client;
+    } catch (err) {
+        console.error('CRITICAL: Failed to initialize WhatsApp client!');
+        console.error('Error Name:', err.name);
+        console.error('Error Message:', err.message);
+        clientStatus = 'ERROR';
+        throw err;
+    }
+};
+
+// Only auto-initialize if not in a Firebase Function environment
+if (!process.env.FIREBASE_CONFIG && !process.env.FUNCTIONS_EMULATOR) {
+    initializeClient().catch(console.error);
+}
 
 const getQR = () => qrCodeData;
 const getStatus = () => clientStatus;
@@ -112,4 +124,4 @@ const sendMessage = async (phone, text) => {
     return await client.sendMessage(chatId, text);
 };
 
-module.exports = { getQR, getStatus, sendMessage };
+module.exports = { getQR, getStatus, sendMessage, initializeClient };

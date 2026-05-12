@@ -1,7 +1,8 @@
 const cron = require('node-cron');
 const { getRecentMessages, saveMessage } = require('./firebase');
 const { generateMessage } = require('./gemini');
-const { sendMessage, getStatus } = require('./whatsapp');
+const { sendMessage, getStatus, initializeClient } = require('./whatsapp');
+const { onSchedule } = require('firebase-functions/v2/scheduler');
 
 const sendDailyMessage = async (triggeredBy = 'auto') => {
   console.log(`Starting daily message task (triggered by: ${triggeredBy})`);
@@ -52,9 +53,30 @@ const sendDailyMessage = async (triggeredBy = 'auto') => {
   }
 };
 
-// 0 1 * * * UTC is 7:00 AM BST (UTC+6)
-cron.schedule('0 1 * * *', () => {
-  sendDailyMessage('auto');
+// Firebase Scheduled Function
+exports.dailyTask = onSchedule({
+  schedule: '0 1 * * *', // 7:00 AM BST (UTC+6)
+  timeZone: 'UTC',
+  memory: '1GiB',
+  timeoutSeconds: 540 // Max 9 minutes
+}, async (event) => {
+  console.log('Running scheduled daily message task');
+  try {
+    // In a stateless function, we MUST initialize the client every time
+    // This will only work if the session is saved and restored
+    await initializeClient();
+    
+    // Wait for READY status (max 60 seconds)
+    let attempts = 0;
+    while (getStatus() !== 'READY' && attempts < 12) {
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      attempts++;
+    }
+
+    await sendDailyMessage('auto');
+  } catch (error) {
+    console.error('Scheduled task failed:', error);
+  }
 });
 
 module.exports = { sendDailyMessage };

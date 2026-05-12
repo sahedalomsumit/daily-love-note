@@ -6,12 +6,16 @@ const triggerRoutes = require('./routes/trigger');
 const historyRoutes = require('./routes/history');
 const statusRoutes = require('./routes/status');
 
-// Initialize dependencies that need to run immediately
-require('./whatsapp');
-require('./scheduler');
+const { onRequest } = require('firebase-functions/v2/https');
+
+// Initialize dependencies - only in non-functions environment or if needed
+// Note: WhatsApp initialization is slow, so we might want to lazy-load it
+if (!process.env.FUNCTIONS_EMULATOR && !process.env.FIREBASE_CONFIG) {
+  require('./whatsapp');
+  require('./scheduler');
+}
 
 const app = express();
-const port = process.env.PORT || 3001;
 
 // Configure CORS
 const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
@@ -71,6 +75,21 @@ app.use('/api/trigger', authMiddleware, triggerRoutes);
 app.use('/api/history', authMiddleware, historyRoutes);
 app.use('/api/status', authMiddleware, statusRoutes);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+// Export Scheduled Task
+const { dailyTask } = require('./scheduler');
+exports.dailyTask = dailyTask;
+
+// Export for Firebase Functions
+exports.api = onRequest({
+  memory: '1GiB',
+  timeoutSeconds: 300,
+  cors: true // Let Firebase handle CORS if needed, or keep our middleware
+}, app);
+
+// Start local server if not running as a function
+if (!process.env.FIREBASE_CONFIG) {
+  const port = process.env.PORT || 3001;
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+}
