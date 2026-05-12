@@ -40,6 +40,15 @@ jobs:
         working-directory: server
         run: npm ci
 
+      - name: Create Backend Env File
+        working-directory: server
+        run: |
+          echo "WHATSAPP_PHONE_ID=${{ secrets.WHATSAPP_PHONE_ID }}" > .env
+          echo "WHATSAPP_ACCESS_TOKEN=${{ secrets.WHATSAPP_ACCESS_TOKEN }}" >> .env
+          echo "SENDER_PHONE=${{ secrets.SENDER_PHONE }}" >> .env
+          echo "WIFE_PHONE=${{ secrets.WIFE_PHONE }}" >> .env
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
+          echo "FRONTEND_URL=https://sahedalomsumit.github.io" >> .env
       - name: Deploy to Firebase
         run: npx firebase-tools deploy --only hosting,functions --json --token ${{ secrets.FIREBASE_TOKEN }}
         env:
