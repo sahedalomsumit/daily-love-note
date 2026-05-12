@@ -2,7 +2,7 @@
 
 > A premium full-stack automation bridge that sends heartfelt, AI-crafted messages daily. Because love should never be on autopilot, even when the messages are.
 
-![Daily Love Note Dashboard](file:///C:/Users/sahed/.gemini/antigravity/brain/ee6446ae-0b6f-4bec-a144-10d946e7683d/daily_love_note_dashboard_mockup_1778571230568.png)
+![Daily Love Note Dashboard](client/public/daily_love_note_dashboard_mockup_1778571230568.png)
 
 ## ✨ Key Features
 
