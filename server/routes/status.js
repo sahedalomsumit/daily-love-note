@@ -24,4 +24,10 @@ router.get('/', async (req, res) => {
   });
 });
 
+router.post('/reconnect', async (req, res) => {
+  const { reconnectClient } = require('../whatsapp');
+  const result = await reconnectClient();
+  res.json(result);
+});
+
 module.exports = router;

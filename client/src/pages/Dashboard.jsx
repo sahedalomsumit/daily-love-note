@@ -10,6 +10,7 @@ const Dashboard = () => {
   const [status, setStatus] = useState(null);
   const [lastMessage, setLastMessage] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [reconnecting, setReconnecting] = useState(false);
 
   const fetchStatus = async () => {
     try {
@@ -28,6 +29,19 @@ const Dashboard = () => {
       }
     } catch (error) {
       console.error('Failed to fetch history');
+    }
+  };
+
+  const handleReconnect = async () => {
+    setReconnecting(true);
+    try {
+      await api.post('/status/reconnect');
+      // Give it a moment before polling
+      setTimeout(fetchStatus, 2000);
+    } catch (error) {
+      console.error('Failed to reconnect');
+    } finally {
+      setReconnecting(false);
     }
   };
 
@@ -73,6 +87,19 @@ const Dashboard = () => {
                 <p className="text-[10px] text-gray-400">Target Recipient</p>
               </div>
             </div>
+            
+            {(status?.status === 'DISCONNECTED' || status?.status === 'ERROR') && (
+              <button
+                onClick={handleReconnect}
+                disabled={reconnecting}
+                className="mt-4 w-full py-2 px-4 bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-bold rounded-xl border border-gray-200 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {reconnecting ? (
+                  <div className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                ) : null}
+                {reconnecting ? 'Reconnecting...' : 'Reconnect WhatsApp'}
+              </button>
+            )}
           </div>
         </div>
 

@@ -109,6 +109,27 @@ if (!process.env.FIREBASE_CONFIG && !process.env.FUNCTIONS_EMULATOR) {
 
 const getQR = () => qrCodeData;
 const getStatus = () => clientStatus;
+const reconnectClient = async () => {
+    console.log('Manual reconnect requested...');
+    // If client is already initializing, don't start another one
+    if (clientStatus === 'INITIALIZING') return { success: true, status: 'ALREADY_INITIALIZING' };
+    
+    qrCodeData = null;
+    clientStatus = 'INITIALIZING';
+    
+    try {
+        // We don't await initialize() here because it's a long process
+        // We just trigger it and let the events handle the rest
+        client.initialize().catch(err => {
+            console.error('Reconnect failed:', err);
+            clientStatus = 'ERROR';
+        });
+        return { success: true, status: 'INITIALIZING' };
+    } catch (err) {
+        clientStatus = 'ERROR';
+        return { success: false, error: err.message };
+    }
+};
 const sendMessage = async (phone, text) => {
     if (clientStatus !== 'READY') {
         throw new Error('WhatsApp client is not ready');
@@ -124,4 +145,4 @@ const sendMessage = async (phone, text) => {
     return await client.sendMessage(chatId, text);
 };
 
-module.exports = { getQR, getStatus, sendMessage, initializeClient };
+module.exports = { getQR, getStatus, sendMessage, initializeClient, reconnectClient };
