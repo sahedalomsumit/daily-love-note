@@ -1,6 +1,0 @@
-.env
-.env.local
-.wwebjs_auth/
-.wwebjs_cache/
-node_modules/
-firebase-service-account.json

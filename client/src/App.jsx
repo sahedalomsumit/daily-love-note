@@ -4,7 +4,6 @@ import { LayoutDashboard, History as HistoryIcon, Settings as SettingsIcon, Hear
 import { Toaster } from 'react-hot-toast';
 import Dashboard from './pages/Dashboard';
 import History from './pages/History';
-import Settings from './pages/Settings';
 import { clsx } from 'clsx';
 
 const NavLink = ({ to, icon: Icon, children }) => {
@@ -50,7 +49,6 @@ function App() {
           <nav className="space-y-2 flex-1">
             <NavLink to="/" icon={LayoutDashboard}>Dashboard</NavLink>
             <NavLink to="/history" icon={HistoryIcon}>History</NavLink>
-            <NavLink to="/settings" icon={SettingsIcon}>Settings</NavLink>
           </nav>
 
           <div className="mt-auto pt-6 border-t border-gray-50 px-2">
@@ -63,7 +61,6 @@ function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/history" element={<History />} />
-            <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>
       </div>

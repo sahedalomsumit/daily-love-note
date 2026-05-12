@@ -1,54 +1,84 @@
 # Daily Love Note 💖
 
-Full-stack automation app that sends a daily heartfelt message from **Sahed** to **Tamanna**. Featuring advanced AI fallback systems and WhatsApp integration.
+> A premium full-stack automation bridge that sends heartfelt, AI-crafted messages daily. Because love should never be on autopilot, even when the messages are.
+
+![Daily Love Note Dashboard](file:///C:/Users/sahed/.gemini/antigravity/brain/ee6446ae-0b6f-4bec-a144-10d946e7683d/daily_love_note_dashboard_mockup_1778571230568.png)
 
 ## ✨ Key Features
-- **Smart AI Generation**: Uses a 7-tier dynamic fallback system (Gemini 2.0, 3.1, Flash, Pro) to ensure a message is always generated.
-- **WhatsApp Automation**: Real-time message delivery via WhatsApp Web.
-- **Modern Dashboard**: Premium UI with live connection status, message history, and manual trigger modes.
-- **Robust Storage**: Firebase Firestore integration for message deduplication and history.
-- **Multi-lingual**: Naturally rotates between English and Bangla script.
 
-## 🚀 Deployment
+- **🧠 Smart AI Generation**: Powered by a **7-tier dynamic fallback system**. If one Gemini model is busy, the system automatically tries the next (Pro, Flash, 2.0, etc.), ensuring your loved one never misses a note.
+- **📲 WhatsApp Automation**: Seamless delivery via WhatsApp Web integration. Now supports **Pairing Code** authentication for a QR-free, stable connection.
+- **🎨 Premium Dashboard**: A glassmorphic, responsive UI built with React 19 and Tailwind CSS 4. Monitor connection status, view message history, and trigger manual notes with style.
+- **🛡️ Robust & Resilient**: Integrated with **Firebase Firestore** for message deduplication and persistent state management. Never sends the same note twice.
+- **🌍 Multi-lingual Romance**: Naturally rotates between English and Bangla script to keep the connection authentic.
 
-### 1. Backend
-- Deploy the `server/` directory to your preferred cloud provider (e.g., VPS, Firebase, etc.).
-- **Dependencies**: Puppeteer requires a environment where Chrome can be installed.
-- **Environment Variables**:
-  - `GEMINI_API_KEY`: Your Google AI Studio key.
-  - `GEMINI_MODELS`: Comma-separated list of 7+ models (e.g., `gemini-2.0-flash,gemini-flash-latest...`).
-  - `FIREBASE_SERVICE_ACCOUNT`: Minified JSON service account key.
-  - `WIFE_PHONE`: Recipient's phone number with country code.
-  - `APP_SECRET`: Security token for API access.
+## 🛠️ Tech Stack
 
-### 2. Frontend
-- Deploy the `client/` directory (e.g., GitHub Pages, Vercel, Firebase Hosting).
-- **Environment Variables**:
-  - `VITE_API_URL`: Your deployed backend URL.
-  - `VITE_APP_SECRET`: Must match backend `APP_SECRET`.
+- **Frontend**: [React 19](https://react.dev/), [Vite](https://vitejs.dev/), [Tailwind CSS 4](https://tailwindcss.com/), [Lucide Icons](https://lucide.dev/)
+- **Backend**: [Node.js 20](https://nodejs.org/), [Express 5](https://expressjs.com/), [WhatsApp-web.js](https://github.com/pedroslopez/whatsapp-web.js)
+- **AI**: [Google Gemini AI](https://ai.google.dev/) (Multiple fallback tiers)
+- **Infrastructure**: [Firebase](https://firebase.google.com/) (Hosting, Functions, Firestore)
 
-## 🛠️ Local Setup
+## 🚀 Getting Started
 
-### Backend
-1. `cd server`
-2. `npm install`
-3. `node index.js`
-4. Scan the QR code from the Dashboard to link WhatsApp.
+### 1. Environment Configuration
 
-### Frontend
-1. `cd client`
-2. `npm install`
-3. `npm run dev`
+Create a `.env` file in both `client/` and `server/` directories.
 
-## 📅 Scheduling
-Set up automated jobs (e.g., via **cron-job.org** or GitHub Actions):
-1. **Keep Alive**: `GET /api/health` regularly if using a service that sleeps.
-2. **Daily Trigger**: `POST /api/trigger` once daily with `Authorization: Bearer YOUR_APP_SECRET`.
+**Server (`server/.env`):**
+```env
+GEMINI_API_KEY=your_google_ai_key
+GEMINI_MODELS=gemini-2.0-flash,gemini-1.5-flash,gemini-1.5-pro...
+FIREBASE_SERVICE_ACCOUNT={"project_id": "..."}
+WIFE_PHONE=8801XXXXXXXXX
+APP_SECRET=your_secure_token
+```
 
-## 🔒 Security
-- **Bearer Token Auth**: All sensitive routes are protected.
-- **Secure Storage**: Sessions are persisted securely via `LocalAuth`.
-- **API Robustness**: Firestore API must be enabled in Google Cloud Console to track history.
+**Client (`client/.env`):**
+```env
+VITE_API_URL=https://your-api-url.com
+VITE_APP_SECRET=your_secure_token
+```
+
+### 2. Local Installation
+
+```bash
+# Install root dependencies
+npm install
+
+# Run Backend
+cd server
+npm install
+npm run dev
+
+# Run Frontend
+cd ../client
+npm install
+npm run dev
+```
+
+### 3. Connecting WhatsApp
+
+1. Open the Dashboard.
+2. Select **Pairing Code** (or Scan QR if preferred).
+3. Enter your phone number and follow the instructions to link the device.
+
+## 📦 Deployment
+
+This project is optimized for **Firebase**.
+
+1. **Firestore**: Enable Firestore in your Firebase Console.
+2. **GitHub Actions**: The repository includes a `firebase-deploy.yml` workflow.
+3. **Secrets**: Add `FIREBASE_TOKEN` and `VITE_APP_SECRET` to your GitHub Repository Secrets.
+4. **Trigger**: Simply push to `main` to deploy both Frontend (Hosting) and Backend (Functions).
+
+## 📅 Automation
+
+To automate the daily message, set up a cron job (via GitHub Actions or external services like `cron-job.org`):
+
+- **Daily Trigger**: `POST /api/trigger`
+- **Headers**: `Authorization: Bearer YOUR_APP_SECRET`
 
 ---
-Created with love by **Sahed** for **Tamanna**.
+
+Created with ❤️ by **Sahed** for **Tamanna**.
