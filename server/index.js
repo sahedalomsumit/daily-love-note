@@ -18,37 +18,21 @@ if (!process.env.FUNCTIONS_EMULATOR && !process.env.FIREBASE_CONFIG) {
 const app = express();
 
 // Configure CORS
-const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
-  .split(',')
-  .map(url => url.trim().replace(/\/$/, '')) // Remove trailing slashes
-  .filter(Boolean);
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://sahedalomsumit.github.io',
+  ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',').map(url => url.trim().replace(/\/$/, '')) : [])
+].filter(Boolean);
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    // Check if the origin is in our allowed list
-    const isAllowed = allowedOrigins.some(allowed => {
-      if (allowed === '*') return true;
-      try {
-        const allowedUrl = new URL(allowed);
-        const originUrl = new URL(origin);
-        return allowedUrl.hostname === originUrl.hostname;
-      } catch (e) {
-        return allowed === origin || origin.includes(allowed);
-      }
-    });
-
-    if (isAllowed || origin.includes('github.io') || origin.includes('localhost')) {
+    if (!origin || allowedOrigins.includes(origin) || origin.includes('github.io') || origin.includes('localhost')) {
       callback(null, true);
     } else {
       console.warn(`CORS request from unauthorized origin: ${origin}`);
-      // For now, allow it but log it
       callback(null, true);
     }
   },
-  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 200
@@ -83,7 +67,7 @@ exports.dailyTask = dailyTask;
 exports.api = onRequest({
   memory: '1GiB',
   timeoutSeconds: 300,
-  cors: true // Let Firebase handle CORS if needed, or keep our middleware
+  cors: ['https://sahedalomsumit.github.io', 'http://localhost:5173']
 }, app);
 
 // Start local server if not running as a function
