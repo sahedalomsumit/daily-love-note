@@ -2,6 +2,7 @@ const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 
 let qrCodeData = null;
+let pairingCode = null;
 let clientStatus = 'DISCONNECTED';
 
 const fs = require('fs');
@@ -53,16 +54,28 @@ const client = new Client({
 
 });
 
-client.on('qr', (qr) => {
-    qrCodeData = qr;
-    clientStatus = 'QR_READY';
-    console.log('QR RECEIVED', qr);
-    // Optional: display in terminal for debugging
-    // qrcode.generate(qr, {small: true});
+client.on('qr', async (qr) => {
+    if (process.env.SENDER_PHONE) {
+        try {
+            console.log('Requesting pairing code for:', process.env.SENDER_PHONE);
+            pairingCode = await client.requestPairingCode(process.env.SENDER_PHONE.replace(/\D/g, ''));
+            clientStatus = 'PAIRING_READY';
+            console.log('PAIRING CODE RECEIVED:', pairingCode);
+        } catch (err) {
+            console.error('Failed to request pairing code, falling back to QR:', err);
+            qrCodeData = qr;
+            clientStatus = 'QR_READY';
+        }
+    } else {
+        qrCodeData = qr;
+        clientStatus = 'QR_READY';
+        console.log('QR RECEIVED', qr);
+    }
 });
 
 client.on('ready', () => {
     qrCodeData = null;
+    pairingCode = null;
     clientStatus = 'READY';
     console.log('Client is ready!');
 });
@@ -105,6 +118,7 @@ if (!process.env.FIREBASE_CONFIG && !process.env.FUNCTIONS_EMULATOR) {
 }
 
 const getQR = () => qrCodeData;
+const getPairingCode = () => pairingCode;
 const getStatus = () => clientStatus;
 const reconnectClient = async () => {
     console.log('Manual reconnect requested...');
@@ -112,6 +126,7 @@ const reconnectClient = async () => {
     if (clientStatus === 'INITIALIZING') return { success: true, status: 'ALREADY_INITIALIZING' };
     
     qrCodeData = null;
+    pairingCode = null;
     clientStatus = 'INITIALIZING';
     
     try {
@@ -129,11 +144,15 @@ const reconnectClient = async () => {
 };
 const sendMessage = async (phone, text) => {
     if (clientStatus !== 'READY') {
-        throw new Error('WhatsApp client is not ready');
+        throw new Error('WhatsApp disconnected');
+    }
+
+    if (!phone) {
+        throw new Error('Recipient phone number is missing');
     }
     
     // Format phone: remove '+' and append '@c.us' if not already present
-    let chatId = phone.replace('+', '');
+    let chatId = phone.toString().replace('+', '').replace(/\D/g, '');
     if (!chatId.includes('@')) {
         chatId = `${chatId}@c.us`;
     }
@@ -142,4 +161,4 @@ const sendMessage = async (phone, text) => {
     return await client.sendMessage(chatId, text);
 };
 
-module.exports = { getQR, getStatus, sendMessage, initializeClient, reconnectClient };
+module.exports = { getQR, getPairingCode, getStatus, sendMessage, initializeClient, reconnectClient };

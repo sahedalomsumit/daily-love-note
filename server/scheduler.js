@@ -19,14 +19,20 @@ const sendDailyMessage = async (triggeredBy = 'auto') => {
 
   try {
     // 1. Fetch last 30 messages
+    console.log('Fetching recent messages from Firebase...');
     const usedMessages = await getRecentMessages(30);
+    console.log(`Found ${usedMessages.length} recent messages.`);
 
     // 2. Generate via Gemini
+    console.log('Generating message via Gemini...');
     const content = await generateMessage(usedMessages);
+    console.log('Message generated:', content);
 
     // 3. Send via WhatsApp
     const phone = process.env.WIFE_PHONE;
+    console.log(`Sending WhatsApp message to ${phone}...`);
     await sendMessage(phone, content);
+    console.log('WhatsApp message sent.');
 
     // 4. Save to Firestore
     await saveMessage({

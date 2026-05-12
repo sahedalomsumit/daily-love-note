@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getQR, getStatus } = require('../whatsapp');
+const { getQR, getPairingCode, getStatus } = require('../whatsapp');
 const QRCode = require('qrcode');
 
 router.get('/', async (req, res) => {
@@ -19,6 +19,8 @@ router.get('/', async (req, res) => {
   res.json({
     status,
     qr: qrBase64,
+    pairingCode: getPairingCode(),
+    senderPhone: process.env.SENDER_PHONE,
     wifePhone: process.env.WIFE_PHONE,
     models: (process.env.GEMINI_MODELS || "").split(',').map(m => m.trim()).filter(m => m)
   });

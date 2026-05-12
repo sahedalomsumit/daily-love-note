@@ -79,12 +79,22 @@ const Dashboard = () => {
               <StatusBadge status={status?.status} />
             </div>
             <div className="flex items-center gap-3 mt-4">
-              <div className="p-2 bg-green-50 text-green-600 rounded-lg">
+              <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                <Phone size={20} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-700">{formatPhone(status?.senderPhone)}</p>
+                <p className="text-[10px] text-gray-400">Your WhatsApp (Sender)</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 mt-4">
+              <div className="p-2 bg-pink-50 text-pink-600 rounded-lg">
                 <Phone size={20} />
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-700">{formatPhone(status?.wifePhone)}</p>
-                <p className="text-[10px] text-gray-400">Target Recipient</p>
+                <p className="text-[10px] text-gray-400">Target Recipient (Wife)</p>
               </div>
             </div>
             
@@ -165,7 +175,15 @@ const Dashboard = () => {
               Can't wait for the schedule? Send a beautiful note to Tamanna right now.
             </p>
             <div className="relative z-10 w-full">
-              <TriggerButton onSuccess={(newMsg) => setLastMessage(newMsg)} />
+              <TriggerButton 
+                onSuccess={(newMsg) => setLastMessage(newMsg)} 
+                disabled={status?.status !== 'READY'}
+              />
+              {status?.status !== 'READY' && (
+                <p className="text-[10px] text-pink-600 font-bold mt-2 animate-pulse">
+                  Connect WhatsApp to enable sending
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -185,6 +203,35 @@ const Dashboard = () => {
       {status?.status === 'QR_READY' && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <QRScanner qr={status.qr} />
+        </div>
+      )}
+
+      {status?.status === 'PAIRING_READY' && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full text-center space-y-6">
+            <h3 className="text-2xl font-bold text-gray-800">Link WhatsApp</h3>
+            <p className="text-sm text-gray-500">
+              Enter this code on your phone to link your account:
+            </p>
+            <div className="flex justify-center gap-2">
+              {status.pairingCode.split('').map((char, i) => (
+                <div key={i} className="w-10 h-14 bg-gray-50 border-2 border-gray-100 rounded-xl flex items-center justify-center text-2xl font-black text-pink-600 shadow-sm">
+                  {char}
+                </div>
+              ))}
+            </div>
+            <div className="text-left bg-blue-50 p-4 rounded-2xl text-xs text-blue-700 space-y-2">
+              <p className="font-bold">How to link:</p>
+              <ol className="list-decimal list-inside space-y-1">
+                <li>Open WhatsApp on your phone</li>
+                <li>Tap <b>Menu</b> or <b>Settings</b></li>
+                <li>Tap <b>Linked Devices</b></li>
+                <li>Tap <b>Link a Device</b></li>
+                <li>Tap <b>Link with phone number instead</b></li>
+                <li>Enter the 8-character code shown above</li>
+              </ol>
+            </div>
+          </div>
         </div>
       )}
     </div>

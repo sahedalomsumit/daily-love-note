@@ -38,12 +38,27 @@ const Settings = () => {
           <div className="space-y-6">
             <div className="flex items-center justify-between py-3 border-b border-gray-50">
               <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-50 text-blue-500 rounded-lg">
+                  <Smartphone size={18} />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-700">Your WhatsApp (Sender)</p>
+                  <p className="text-xs text-gray-400">Source of all messages</p>
+                </div>
+              </div>
+              <code className="bg-gray-100 px-3 py-1 rounded text-sm font-mono text-gray-600">
+                {maskPhone(status?.senderPhone)}
+              </code>
+            </div>
+
+            <div className="flex items-center justify-between py-3 border-b border-gray-50">
+              <div className="flex items-center gap-3">
                 <div className="p-2 bg-pink-50 text-pink-500 rounded-lg">
                   <Smartphone size={18} />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-700">Wife's Phone</p>
-                  <p className="text-xs text-gray-400">Recipient of all messages</p>
+                  <p className="text-sm font-semibold text-gray-700">Wife's Phone (Recipient)</p>
+                  <p className="text-xs text-gray-400">Target for daily notes</p>
                 </div>
               </div>
               <code className="bg-gray-100 px-3 py-1 rounded text-sm font-mono text-gray-600">

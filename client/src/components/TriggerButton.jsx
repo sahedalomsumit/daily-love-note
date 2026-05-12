@@ -3,7 +3,7 @@ import { Send, Loader2 } from 'lucide-react';
 import api from '../api';
 import toast from 'react-hot-toast';
 
-const TriggerButton = ({ onSuccess }) => {
+const TriggerButton = ({ onSuccess, disabled: parentDisabled }) => {
   const [loading, setLoading] = useState(false);
 
   const handleTrigger = async () => {
@@ -22,7 +22,7 @@ const TriggerButton = ({ onSuccess }) => {
   return (
     <button
       onClick={handleTrigger}
-      disabled={loading}
+      disabled={loading || parentDisabled}
       className="flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-pink-500 to-rose-500 text-white font-semibold rounded-xl hover:from-pink-600 hover:to-rose-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-pink-200"
     >
       {loading ? (
